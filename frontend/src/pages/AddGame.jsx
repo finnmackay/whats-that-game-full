@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { X, Check } from 'lucide-react';
+import { X, Check, Loader } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import * as api from '../services/api';
 
@@ -9,16 +9,41 @@ export default function AddGame() {
   const { isLoggedIn, openLoginModal } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [metadata, setMetadata] = useState(null);
+  const [loadingMetadata, setLoadingMetadata] = useState(true);
 
-  const EQUIPMENT_OPTIONS = [
-    'Standard deck of cards',
-    'Dice',
-    'Pen and paper',
-    'Timer',
-    'Tokens or chips',
-    'Cups',
-    'Ball',
-    'Nothing needed'
+  // Fetch metadata on mount
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      try {
+        const data = await api.getGameMetadata();
+        setMetadata(data);
+      } catch (err) {
+        console.error('Failed to fetch metadata:', err);
+        // Fallback defaults
+        setMetadata({
+          game_types: ['card', 'dice', 'board', 'party', 'strategy', 'drinking'],
+          age_ratings: ['12+', '18+'],
+          equipment: ['Standard deck of cards', 'Dice', 'Pen and paper', 'Nothing needed'],
+          themes: ['Social', 'Strategy', 'Bluffing', 'Memory', 'Speed']
+        });
+      } finally {
+        setLoadingMetadata(false);
+      }
+    };
+    fetchMetadata();
+  }, []);
+
+  const DURATION_OPTIONS = [
+    '5 min',
+    '10 min',
+    '15 min',
+    '20 min',
+    '30 min',
+    '45 min',
+    '1 hour',
+    '1-2 hours',
+    '2+ hours'
   ];
 
   const [formData, setFormData] = useState({
@@ -29,10 +54,12 @@ export default function AddGame() {
     gameType: 'party',
     minPlayers: 2,
     maxPlayers: 8,
-    duration: '',
+    duration: '15 min',
     equipment: [],
-    themes: '',
-    rules: ''
+    themes: [],
+    setup: '',
+    gameplay: '',
+    objective: ''
   });
 
   const handleSubmit = async (e) => {
@@ -43,10 +70,23 @@ export default function AddGame() {
       return;
     }
 
+    // Validation
+    if (formData.equipment.length === 0) {
+      setError('Please select at least one equipment option');
+      return;
+    }
+    if (formData.themes.length === 0) {
+      setError('Please select at least one theme');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
+      // Combine rules sections
+      const combinedRules = `**Setup:**\n${formData.setup}\n\n**Gameplay:**\n${formData.gameplay}\n\n**Objective:**\n${formData.objective}`;
+
       // Transform form data to API format
       const gameData = {
         name: formData.name,
@@ -57,13 +97,11 @@ export default function AddGame() {
           min_players: parseInt(formData.minPlayers),
           max_players: parseInt(formData.maxPlayers)
         },
-        duration: formData.duration || 'Varies',
+        duration: formData.duration,
         equipment: formData.equipment.map(e => ({ equipment_name: e })),
-        themes: formData.themes
-          ? formData.themes.split(',').map(t => ({ theme_name: t.trim() }))
-          : [],
-        rules: formData.rules,
-        image_url: formData.emoji || '🎲',
+        themes: formData.themes.map(t => ({ theme_name: t })),
+        rules: combinedRules,
+        image_url: formData.emoji,
         is_public: true
       };
 
@@ -91,6 +129,23 @@ export default function AddGame() {
         : [...prev.equipment, item]
     }));
   };
+
+  const toggleTheme = (theme) => {
+    setFormData(prev => ({
+      ...prev,
+      themes: prev.themes.includes(theme)
+        ? prev.themes.filter(t => t !== theme)
+        : [...prev.themes, theme]
+    }));
+  };
+
+  if (loadingMetadata) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <Loader size={32} className="animate-spin text-black/30" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
@@ -125,7 +180,7 @@ export default function AddGame() {
             {/* Emoji */}
             <div>
               <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                Emoji Icon
+                Emoji Icon *
               </label>
               <input
                 type="text"
@@ -133,6 +188,7 @@ export default function AddGame() {
                 value={formData.emoji}
                 onChange={handleChange}
                 placeholder="🎲"
+                required
                 className="glass-input w-full px-6 py-6 text-4xl text-center text-black placeholder-black/20"
                 maxLength={2}
               />
@@ -174,37 +230,34 @@ export default function AddGame() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                  Game Type
+                  Game Type *
                 </label>
                 <select
                   name="gameType"
                   value={formData.gameType}
                   onChange={handleChange}
+                  required
                   className="glass-input w-full px-6 py-5 text-lg text-black"
                 >
-                  <option value="card">Card</option>
-                  <option value="dice">Dice</option>
-                  <option value="board">Board</option>
-                  <option value="party">Party</option>
-                  <option value="strategy">Strategy</option>
-                  <option value="drinking">Drinking</option>
+                  {(metadata?.game_types || []).map(type => (
+                    <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                  Age Rating
+                  Age Rating *
                 </label>
                 <select
                   name="ageRating"
                   value={formData.ageRating}
                   onChange={handleChange}
+                  required
                   className="glass-input w-full px-6 py-5 text-lg text-black"
                 >
-                  <option value="3+">3+</option>
-                  <option value="7+">7+</option>
-                  <option value="12+">12+</option>
-                  <option value="16+">16+</option>
-                  <option value="18+">18+</option>
+                  {(metadata?.age_ratings || ['12+', '18+']).map(rating => (
+                    <option key={rating} value={rating}>{rating}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -213,7 +266,7 @@ export default function AddGame() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                  Min Players
+                  Min Players *
                 </label>
                 <input
                   type="number"
@@ -222,12 +275,13 @@ export default function AddGame() {
                   onChange={handleChange}
                   min="1"
                   max="50"
+                  required
                   className="glass-input w-full px-6 py-5 text-lg text-black"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                  Max Players
+                  Max Players *
                 </label>
                 <input
                   type="number"
@@ -236,6 +290,7 @@ export default function AddGame() {
                   onChange={handleChange}
                   min="1"
                   max="100"
+                  required
                   className="glass-input w-full px-6 py-5 text-lg text-black"
                 />
               </div>
@@ -244,25 +299,28 @@ export default function AddGame() {
             {/* Duration */}
             <div>
               <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                Duration
+                Duration *
               </label>
-              <input
-                type="text"
+              <select
                 name="duration"
                 value={formData.duration}
                 onChange={handleChange}
-                placeholder="e.g., 15-30 min"
-                className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30"
-              />
+                required
+                className="glass-input w-full px-6 py-5 text-lg text-black"
+              >
+                {DURATION_OPTIONS.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
             </div>
 
             {/* Equipment */}
             <div>
               <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                Equipment Needed
+                Equipment Needed *
               </label>
-              <div className="flex flex-wrap gap-3">
-                {EQUIPMENT_OPTIONS.map(item => (
+              <div className="flex flex-wrap gap-3 max-h-64 overflow-y-auto p-2">
+                {(metadata?.equipment || []).map(item => (
                   <button
                     key={item}
                     type="button"
@@ -282,32 +340,79 @@ export default function AddGame() {
             {/* Themes */}
             <div>
               <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                Themes / Tags
+                Themes / Tags *
               </label>
-              <input
-                type="text"
-                name="themes"
-                value={formData.themes}
-                onChange={handleChange}
-                placeholder="Social, Strategy, Bluffing (comma separated)"
-                className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30"
-              />
+              <div className="flex flex-wrap gap-3 max-h-64 overflow-y-auto p-2">
+                {(metadata?.themes || []).map(theme => (
+                  <button
+                    key={theme}
+                    type="button"
+                    onClick={() => toggleTheme(theme)}
+                    className={`glass-button px-4 py-3 text-base transition-all ${
+                      formData.themes.includes(theme)
+                        ? 'glass-button-active'
+                        : 'text-black/60 hover:text-black'
+                    }`}
+                  >
+                    {theme}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Rules */}
-            <div>
-              <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
-                Rules *
-              </label>
-              <textarea
-                name="rules"
-                value={formData.rules}
-                onChange={handleChange}
-                placeholder="Explain how to play the game..."
-                required
-                rows={10}
-                className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30 resize-none leading-relaxed"
-              />
+            {/* Rules Section */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-black border-b border-black/10 pb-3">
+                Game Rules
+              </h3>
+
+              {/* Setup */}
+              <div>
+                <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
+                  Setup *
+                </label>
+                <textarea
+                  name="setup"
+                  value={formData.setup}
+                  onChange={handleChange}
+                  placeholder="How to set up the game (deal cards, arrange pieces, etc.)"
+                  required
+                  rows={4}
+                  className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30 resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Gameplay */}
+              <div>
+                <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
+                  Gameplay *
+                </label>
+                <textarea
+                  name="gameplay"
+                  value={formData.gameplay}
+                  onChange={handleChange}
+                  placeholder="How to play - describe turns, actions, and mechanics"
+                  required
+                  rows={6}
+                  className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30 resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Objective */}
+              <div>
+                <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
+                  Objective *
+                </label>
+                <textarea
+                  name="objective"
+                  value={formData.objective}
+                  onChange={handleChange}
+                  placeholder="How to win the game"
+                  required
+                  rows={3}
+                  className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30 resize-none leading-relaxed"
+                />
+              </div>
             </div>
 
             {/* Submit */}

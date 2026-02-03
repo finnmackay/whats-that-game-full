@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8001';
+const API_URL = 'https://whats-that-game-production.up.railway.app';
 
 // Get stored token
 const getToken = () => localStorage.getItem('token');
@@ -107,4 +107,56 @@ export const deleteGame = async (gameId) => {
 
   if (!res.ok) throw new Error('Failed to delete game');
   return true;
+};
+
+// Get single game by ID
+export const getGame = async (gameId) => {
+  const res = await fetch(`${API_URL}/games/${gameId}`, {
+    headers: authHeaders(),
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch game');
+  return res.json();
+};
+
+// Get current user's games
+export const getMyGames = async (skip = 0, limit = 50) => {
+  const res = await fetch(`${API_URL}/games/mine?skip=${skip}&limit=${limit}`, {
+    headers: authHeaders(),
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch your games');
+  return res.json();
+};
+
+// Get game metadata (enums for equipment, themes, game types)
+export const getGameMetadata = async () => {
+  const res = await fetch(`${API_URL}/games/metadata`);
+
+  if (!res.ok) throw new Error('Failed to fetch metadata');
+  return res.json();
+};
+
+// Report a game
+export const reportGame = async (gameId, reason) => {
+  const res = await fetch(`${API_URL}/games/${gameId}/report`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ reason }),
+  });
+
+  if (!res.ok) throw new Error('Failed to report game');
+  return res.json();
+};
+
+// Toggle game visibility (public/private)
+export const setGameVisibility = async (gameId, isPublic) => {
+  const res = await fetch(`${API_URL}/games/${gameId}/visibility`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ is_public: isPublic }),
+  });
+
+  if (!res.ok) throw new Error('Failed to update visibility');
+  return res.json();
 };

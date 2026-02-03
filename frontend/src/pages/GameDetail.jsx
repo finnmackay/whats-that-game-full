@@ -1,11 +1,20 @@
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
-import { ArrowLeft, Star, ArrowUp } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { ArrowLeft, Star, ArrowUp, Flag, X } from 'lucide-react';
+import * as api from '../services/api';
 
 export default function GameDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { games, savedGameIds, toggleSaved, upvotes, userUpvotes, toggleUpvote } = useGames();
+  const { isLoggedIn, openLoginModal } = useAuth();
+
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [reportError, setReportError] = useState('');
 
   const game = games.find(g => g.id === id);
 
@@ -24,6 +33,30 @@ export default function GameDetail() {
   const hasUpvoted = userUpvotes[game.id];
   const voteCount = upvotes[game.id];
 
+  const handleReport = async () => {
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
+
+    if (!reportReason.trim()) {
+      setReportError('Please provide a reason');
+      return;
+    }
+
+    try {
+      await api.reportGame(game.id, reportReason);
+      setReportSubmitted(true);
+      setTimeout(() => {
+        setShowReportModal(false);
+        setReportSubmitted(false);
+        setReportReason('');
+      }, 2000);
+    } catch (err) {
+      setReportError('Failed to submit report');
+    }
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
       <div className="w-full max-w-2xl">
@@ -36,17 +69,26 @@ export default function GameDetail() {
             <ArrowLeft size={18} />
             <span>Back</span>
           </button>
-          <button
-            onClick={() => toggleSaved(game.id)}
-            className={`glass-button px-6 py-3 transition-all text-base font-medium ${
-              isSaved
-                ? 'glass-button-active'
-                : 'text-black/70 hover:text-black'
-            }`}
-          >
-            <Star size={18} fill={isSaved ? 'currentColor' : 'none'} />
-            <span>{isSaved ? 'Saved' : 'Save'}</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="glass-button px-4 py-3 text-black/40 hover:text-red-500 transition-colors"
+              title="Report this game"
+            >
+              <Flag size={18} />
+            </button>
+            <button
+              onClick={() => toggleSaved(game.id)}
+              className={`glass-button px-6 py-3 transition-all text-base font-medium ${
+                isSaved
+                  ? 'glass-button-active'
+                  : 'text-black/70 hover:text-black'
+              }`}
+            >
+              <Star size={18} fill={isSaved ? 'currentColor' : 'none'} />
+              <span>{isSaved ? 'Saved' : 'Save'}</span>
+            </button>
+          </div>
         </header>
 
         {/* Main Card */}
@@ -83,53 +125,57 @@ export default function GameDetail() {
           </div>
 
           {/* Equipment */}
-          <div className="mb-10">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5">
-              What you need
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              {game.equipment.map((item, i) => (
-                <span
-                  key={i}
-                  className="glass-button px-5 py-3 text-black/70 text-base"
-                >
-                  {item}
-                </span>
-              ))}
+          {game.equipment && game.equipment.length > 0 && (
+            <div className="mb-10">
+              <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5">
+                What you need
+              </h2>
+              <div className="flex flex-wrap gap-4">
+                {game.equipment.map((item, i) => (
+                  <span
+                    key={i}
+                    className="glass-button px-5 py-3 text-black/70 text-base"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Rules */}
           <div className="mb-10">
             <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5">
               How to play
             </h2>
-            <p className="text-black/70 leading-relaxed text-lg whitespace-pre-line">
+            <div className="text-black/70 leading-relaxed text-lg whitespace-pre-line prose prose-lg">
               {game.rules}
-            </p>
+            </div>
           </div>
 
           {/* Themes */}
-          <div className="mb-10">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5">
-              Themes
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              {game.themes.map((theme, i) => (
-                <span
-                  key={i}
-                  className="text-base text-black/50"
-                >
-                  #{theme}
-                </span>
-              ))}
+          {game.themes && game.themes.length > 0 && (
+            <div className="mb-10">
+              <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5">
+                Themes
+              </h2>
+              <div className="flex flex-wrap gap-4">
+                {game.themes.map((theme, i) => (
+                  <span
+                    key={i}
+                    className="text-base text-black/50"
+                  >
+                    #{theme}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Contributor & Upvote */}
           <div className="pt-8 border-t border-black/5 flex items-center justify-between">
             <div className="text-base text-black/40">
-              Added by <span className="text-black/60 font-medium">{game.contributor.name}</span>
+              Added by <span className="text-black/60 font-medium">{game.contributor?.name || 'Anonymous'}</span>
             </div>
             <button
               onClick={() => toggleUpvote(game.id)}
@@ -145,6 +191,66 @@ export default function GameDetail() {
           </div>
         </div>
       </div>
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
+          <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setShowReportModal(false)}
+          />
+          <div className="glass-card p-8 w-full max-w-md relative">
+            <button
+              onClick={() => setShowReportModal(false)}
+              className="absolute top-4 right-4 text-black/40 hover:text-black"
+            >
+              <X size={24} />
+            </button>
+
+            {reportSubmitted ? (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4">✓</div>
+                <h3 className="text-xl font-semibold text-black">Report Submitted</h3>
+                <p className="text-black/50 mt-2">Thank you for helping keep the community safe</p>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-xl font-semibold text-black mb-2">Report Game</h3>
+                <p className="text-black/50 mb-6">Why are you reporting "{game.name}"?</p>
+
+                {reportError && (
+                  <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 mb-4 text-sm">
+                    {reportError}
+                  </div>
+                )}
+
+                <textarea
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  placeholder="Describe the issue..."
+                  rows={4}
+                  className="glass-input w-full px-4 py-3 text-base text-black placeholder-black/30 resize-none mb-4"
+                />
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowReportModal(false)}
+                    className="flex-1 glass-button py-3 text-black/60"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleReport}
+                    className="flex-1 glass-button glass-button-active py-3"
+                  >
+                    Submit Report
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
