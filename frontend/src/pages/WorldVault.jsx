@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Globe, Filter, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Globe, Filter, X, Sparkles, TrendingUp, Shuffle, ChevronRight } from 'lucide-react';
 import GameCard from '../components/GameCard';
 import { useGames } from '../context/GameContext';
 import * as api from '../services/api';
@@ -10,6 +10,7 @@ const DURATIONS = ['any', '5-10 min', '15-30 min', '30-60 min', '1+ hour'];
 
 export default function WorldVault() {
   const { games } = useGames();
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -17,6 +18,28 @@ export default function WorldVault() {
   const [duration, setDuration] = useState('any');
   const [ageRating, setAgeRating] = useState('any');
   const [metadata, setMetadata] = useState(null);
+
+  // New games (most recently added)
+  const newGames = useMemo(() => {
+    return [...games]
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+      .slice(0, 4);
+  }, [games]);
+
+  // Trending games (most upvoted)
+  const trendingGames = useMemo(() => {
+    return [...games]
+      .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0))
+      .slice(0, 4);
+  }, [games]);
+
+  // Random game
+  const goToRandomGame = () => {
+    if (games.length > 0) {
+      const randomIndex = Math.floor(Math.random() * games.length);
+      navigate(`/game/${games[randomIndex].id}`);
+    }
+  };
 
   // Fetch metadata for dynamic filters
   useEffect(() => {
@@ -101,6 +124,69 @@ export default function WorldVault() {
             </div>
           </div>
         </header>
+
+        {/* New & Trending Sections */}
+        {!searchQuery && activeFilter === 'all' && (
+          <div className="space-y-10 mb-12">
+            {/* New Games */}
+            <section>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 flex items-center gap-2">
+                  <Sparkles size={16} />
+                  New Games
+                </h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {newGames.map(game => (
+                  <Link key={game.id} to={`/game/${game.id}`}>
+                    <div className="glass-card p-4 cursor-pointer text-center">
+                      <div className="text-3xl mb-2">{game.emoji}</div>
+                      <h3 className="font-medium text-black text-sm truncate">{game.name}</h3>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            {/* Trending Games */}
+            <section>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 flex items-center gap-2">
+                  <TrendingUp size={16} />
+                  Trending
+                </h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {trendingGames.map(game => (
+                  <Link key={game.id} to={`/game/${game.id}`}>
+                    <div className="glass-card p-4 cursor-pointer text-center">
+                      <div className="text-3xl mb-2">{game.emoji}</div>
+                      <h3 className="font-medium text-black text-sm truncate">{game.name}</h3>
+                      <p className="text-xs text-black/40 mt-1">{game.upvotes || 0} upvotes</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            {/* Random Game Button */}
+            <button
+              onClick={goToRandomGame}
+              className="w-full glass-card p-5 cursor-pointer flex items-center justify-center gap-3 hover:bg-[var(--color-card-hover)] transition-colors"
+            >
+              <Shuffle size={20} className="text-black/60" />
+              <span className="text-black font-medium">I'm Feeling Lucky</span>
+              <ChevronRight size={20} className="text-black/40" />
+            </button>
+          </div>
+        )}
+
+        {/* All Games Section Header */}
+        {!searchQuery && activeFilter === 'all' && (
+          <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-6">
+            All Games
+          </h2>
+        )}
 
         {/* Search + Filter Toggle */}
         <div className="mb-6 flex gap-4">

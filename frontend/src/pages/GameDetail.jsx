@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Star, ArrowUp, Flag, X } from 'lucide-react';
+import { ArrowLeft, Star, ArrowUp, Flag, X, Share2, Check } from 'lucide-react';
 import * as api from '../services/api';
 
 export default function GameDetail() {
@@ -15,6 +15,24 @@ export default function GameDetail() {
   const [reportReason, setReportReason] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [reportError, setReportError] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const text = `Check out "${game.name}" on What's That Game!`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: game.name, text, url });
+      } catch (err) {
+        // User cancelled or error
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const game = games.find(g => g.id === id);
 
@@ -70,6 +88,13 @@ export default function GameDetail() {
             <span>Back</span>
           </button>
           <div className="flex gap-3">
+            <button
+              onClick={handleShare}
+              className="glass-button px-4 py-3 text-black/40 hover:text-black transition-colors"
+              title="Share this game"
+            >
+              {copied ? <Check size={18} className="text-green-500" /> : <Share2 size={18} />}
+            </button>
             <button
               onClick={() => setShowReportModal(true)}
               className="glass-button px-4 py-3 text-black/40 hover:text-red-500 transition-colors"

@@ -1,15 +1,23 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut, Settings, X, Check } from 'lucide-react';
+import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut, Settings, X, Check, Shuffle, Sparkles } from 'lucide-react';
 
 export default function Home() {
-  const { savedGames, gameOfTheWeek, upvotes, loading } = useGames();
+  const { games, savedGames, gameOfTheWeek, upvotes, loading, suggestedGame, lastUpvotedGame } = useGames();
   const { user, isLoggedIn, openLoginModal, logout } = useAuth();
   const { theme, setTheme, themes } = useTheme();
   const [showSettings, setShowSettings] = useState(false);
+  const navigate = useNavigate();
+
+  const goToRandomGame = () => {
+    if (games.length > 0) {
+      const randomIndex = Math.floor(Math.random() * games.length);
+      navigate(`/game/${games[randomIndex].id}`);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
@@ -86,6 +94,41 @@ export default function Home() {
               </div>
             )}
           </section>
+
+          {/* Suggested For You */}
+          {suggestedGame && (
+            <section>
+              <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5 px-1 flex items-center gap-2">
+                <Sparkles size={14} />
+                Suggested For You
+              </h2>
+              <Link to={`/game/${suggestedGame.id}`}>
+                <div className="glass-card p-6 flex items-center gap-6 cursor-pointer">
+                  <span className="text-4xl">{suggestedGame.emoji}</span>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-black text-lg">
+                      {suggestedGame.name}
+                    </h3>
+                    <p className="text-black/40 text-sm mt-1">
+                      Because you liked {lastUpvotedGame?.name}
+                    </p>
+                  </div>
+                  <ChevronRight size={24} className="text-black/30" />
+                </div>
+              </Link>
+            </section>
+          )}
+
+          {/* Random Game Button */}
+          {games.length > 0 && (
+            <button
+              onClick={goToRandomGame}
+              className="w-full glass-card p-5 cursor-pointer flex items-center justify-center gap-3 hover:bg-[var(--color-card-hover)] transition-colors"
+            >
+              <Shuffle size={20} className="text-black/60" />
+              <span className="text-black font-medium">I'm Feeling Lucky</span>
+            </button>
+          )}
 
           {/* Saved Games */}
           <section>
