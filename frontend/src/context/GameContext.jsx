@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import * as api from '../services/api';
+import { seedGames } from '../data/seedGames';
 
 const GameContext = createContext();
 
@@ -40,13 +41,17 @@ export function GameProvider({ children }) {
           rules: game.rules,
           upvotes: game.upvotes,
           downvotes: game.downvotes,
+          createdAt: game.created_at,
           contributor: {
             name: game.contributor.username
           }
         }));
-        setGames(transformedGames);
+        // Use seed data as fallback if API returns empty
+        setGames(transformedGames.length > 0 ? transformedGames : seedGames);
       } catch (e) {
         console.error('Failed to fetch games:', e);
+        // Use seed data on API failure
+        setGames(seedGames);
       } finally {
         setLoading(false);
       }
