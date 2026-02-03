@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Globe, Shuffle, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Globe, Dices, Sparkles, TrendingUp } from 'lucide-react';
 import GameCard from '../components/GameCard';
 import { useGames } from '../context/GameContext';
 
@@ -64,25 +64,23 @@ export default function WorldVault() {
           </div>
         </header>
 
-        {/* Search Bar */}
-        <div className="mb-4">
+        {/* Search Bar + Roll the Dice */}
+        <div className="flex gap-3 mb-8">
           <input
             type="text"
             placeholder="Search games..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30"
+            className="glass-input flex-1 px-6 py-5 text-lg text-black placeholder-black/30"
           />
+          <button
+            onClick={goToRandomGame}
+            className="glass-card px-6 py-5 cursor-pointer flex items-center gap-3 hover:bg-[var(--color-card-hover)] transition-colors whitespace-nowrap"
+          >
+            <Dices size={22} className="text-black/60" />
+            <span className="text-black font-medium hidden sm:inline">Roll the Dice</span>
+          </button>
         </div>
-
-        {/* I'm Feeling Lucky Button */}
-        <button
-          onClick={goToRandomGame}
-          className="w-full glass-card p-4 mb-8 cursor-pointer flex items-center justify-center gap-3 hover:bg-[var(--color-card-hover)] transition-colors"
-        >
-          <Shuffle size={20} className="text-black/60" />
-          <span className="text-black font-medium">I'm Feeling Lucky</span>
-        </button>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-8">
