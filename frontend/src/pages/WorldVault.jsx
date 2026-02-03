@@ -43,21 +43,21 @@ export default function WorldVault() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
-      <div className="w-full max-w-6xl">
+    <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-12 md:py-16 lg:px-20">
+      <div className="w-full max-w-3xl">
         {/* Header */}
-        <header className="mb-10">
-          <Link to="/" className="glass-button px-5 py-3 text-black/60 hover:text-black transition-colors mb-8 text-base">
-            <ArrowLeft size={18} />
+        <header className="mb-8">
+          <Link to="/" className="glass-button px-4 py-2 text-black/60 hover:text-black transition-colors mb-6 text-sm inline-flex">
+            <ArrowLeft size={16} />
             <span>Back</span>
           </Link>
-          <div className="flex items-center gap-6">
-            <Globe size={48} strokeWidth={1.5} className="text-black/70" />
+          <div className="flex items-center gap-4">
+            <Globe size={36} strokeWidth={1.5} className="text-black/70" />
             <div>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-black">
+              <h1 className="text-3xl font-semibold tracking-tight text-black">
                 World Vault
               </h1>
-              <p className="text-black/50 text-lg mt-2">
+              <p className="text-black/50 text-base">
                 {games.length} games from the community
               </p>
             </div>
@@ -65,65 +65,66 @@ export default function WorldVault() {
         </header>
 
         {/* Search Bar + Roll the Dice */}
-        <div className="flex gap-3 mb-8">
+        <div className="flex gap-2 mb-4">
           <input
             type="text"
             placeholder="Search games..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="glass-input flex-1 px-6 py-5 text-lg text-black placeholder-black/30"
+            className="glass-input flex-1 px-4 py-3 text-base text-black placeholder-black/30"
           />
           <button
             onClick={goToRandomGame}
-            className="glass-card px-6 py-5 cursor-pointer flex items-center gap-3 hover:bg-[var(--color-card-hover)] transition-colors whitespace-nowrap"
+            className="glass-button px-4 py-3 cursor-pointer flex items-center gap-2 hover:bg-[var(--color-card-hover)] transition-colors"
+            title="Roll the Dice"
           >
-            <Dices size={22} className="text-black/60" />
-            <span className="text-black font-medium hidden sm:inline">Roll the Dice</span>
+            <Dices size={20} className="text-black/60" />
+            <span className="text-black font-medium hidden sm:inline text-sm">Random</span>
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex gap-2 mb-6">
           <button
             onClick={() => setActiveTab('new')}
-            className={`flex-1 glass-button px-6 py-4 text-base font-medium transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 glass-button px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === 'new'
                 ? 'glass-button-active'
-                : 'text-black/70 hover:text-black'
+                : 'text-black/60 hover:text-black'
             }`}
           >
-            <Sparkles size={18} />
-            <span>New Games</span>
+            <Sparkles size={16} />
+            <span>New</span>
           </button>
           <button
             onClick={() => setActiveTab('trending')}
-            className={`flex-1 glass-button px-6 py-4 text-base font-medium transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 glass-button px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === 'trending'
                 ? 'glass-button-active'
-                : 'text-black/70 hover:text-black'
+                : 'text-black/60 hover:text-black'
             }`}
           >
-            <TrendingUp size={18} />
+            <TrendingUp size={16} />
             <span>Trending</span>
           </button>
         </div>
 
         {/* Results Count */}
         {searchQuery && (
-          <div className="mb-6 text-black/50 text-base">
+          <div className="mb-4 text-black/50 text-sm">
             Found {filteredGames.length} games
           </div>
         )}
 
-        {/* Game Grid */}
+        {/* Game List */}
         {filteredGames.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="space-y-3">
             {filteredGames.map((game) => (
               <GameCard key={game.id} game={game} />
             ))}
           </div>
         ) : (
-          <div className="glass-card p-16 text-center text-black/40 text-lg">
+          <div className="glass-card p-12 text-center text-black/40 text-base">
             No games found
           </div>
         )}
