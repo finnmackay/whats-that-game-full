@@ -13,6 +13,9 @@ export function GameProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
   const [userUpvotes, setUserUpvotes] = useState({});
+  const [lastUpvotedGameId, setLastUpvotedGameId] = useState(() => {
+    return localStorage.getItem('lastUpvotedGameId') || null;
+  });
 
   // Fetch games from API
   useEffect(() => {
@@ -81,6 +84,12 @@ export function GameProvider({ children }) {
           : game
       ));
       setUserUpvotes(prev => ({ ...prev, [gameId]: !remove }));
+
+      // Track last upvoted game (only when adding upvote, not removing)
+      if (!remove) {
+        setLastUpvotedGameId(gameId);
+        localStorage.setItem('lastUpvotedGameId', gameId);
+      }
     } catch (e) {
       console.error('Failed to upvote:', e);
     }
@@ -96,6 +105,17 @@ export function GameProvider({ children }) {
     ? games.reduce((a, b) => (a.upvotes > b.upvotes ? a : b))
     : null;
 
+  // Get suggested game based on last upvoted game (same type or theme)
+  const lastUpvotedGame = games.find(g => g.id === lastUpvotedGameId);
+  const suggestedGame = lastUpvotedGame
+    ? games.find(g =>
+        g.id !== lastUpvotedGameId &&
+        g.id !== gameOfTheWeek?.id &&
+        (g.gameType === lastUpvotedGame.gameType ||
+         g.themes?.some(t => lastUpvotedGame.themes?.includes(t)))
+      )
+    : null;
+
   return (
     <GameContext.Provider value={{
       games,
@@ -106,7 +126,9 @@ export function GameProvider({ children }) {
       upvotes,
       userUpvotes,
       toggleUpvote,
-      gameOfTheWeek
+      gameOfTheWeek,
+      suggestedGame,
+      lastUpvotedGame
     }}>
       {children}
     </GameContext.Provider>
