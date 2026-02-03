@@ -62,6 +62,18 @@ export default function AddGame() {
     objective: ''
   });
 
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const EMOJI_OPTIONS = [
+    '🎲', '🎯', '🃏', '♠️', '♥️', '♦️', '♣️', '🎰',
+    '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎮', '🕹️',
+    '🏆', '🥇', '🥈', '🥉', '🏅', '⚽', '🏀', '🎾',
+    '🍺', '🍻', '🥂', '🍷', '🍸', '🥃', '🍹', '🧊',
+    '🔥', '💥', '⚡', '✨', '💫', '🌟', '⭐', '🎉',
+    '🤔', '🧠', '💡', '🎱', '🎳', '🎪', '🎠', '🎡',
+    '👑', '💎', '🗡️', '🛡️', '🏹', '🔮', '📜', '🗺️'
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -182,16 +194,37 @@ export default function AddGame() {
               <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
                 Emoji Icon *
               </label>
-              <input
-                type="text"
-                name="emoji"
-                value={formData.emoji}
-                onChange={handleChange}
-                placeholder="🎲"
-                required
-                className="glass-input w-full px-6 py-6 text-4xl text-center text-black placeholder-black/20"
-                maxLength={2}
-              />
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="glass-input w-full px-6 py-6 text-4xl text-center text-black cursor-pointer hover:bg-[var(--color-card-hover)] transition-colors"
+                >
+                  {formData.emoji || <span className="text-black/20">Click to select</span>}
+                </button>
+
+                {showEmojiPicker && (
+                  <div className="absolute top-full left-0 right-0 mt-2 glass-card p-4 z-10 shadow-lg">
+                    <div className="grid grid-cols-8 gap-2">
+                      {EMOJI_OPTIONS.map((emoji) => (
+                        <button
+                          key={emoji}
+                          type="button"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, emoji }));
+                            setShowEmojiPicker(false);
+                          }}
+                          className={`text-2xl p-2 rounded hover:bg-[var(--color-card-hover)] transition-colors ${
+                            formData.emoji === emoji ? 'bg-[var(--color-primary)] text-white' : ''
+                          }`}
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Name */}

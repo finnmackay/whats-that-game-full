@@ -1,6 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import "tailwindcss";
 
+:root {
+  --color-primary: #000;
+  --color-accent: #000;
+  --color-bg: #fff;
+  --color-card: #f5f5f5;
+  --color-card-hover: #eee;
+}
+
+/* Purple & Yellow Theme */
+[data-theme="purple-yellow"] {
+  --color-primary: #7c3aed;
+  --color-accent: #eab308;
+  --color-bg: #faf5ff;
+  --color-card: #f3e8ff;
+  --color-card-hover: #e9d5ff;
+}
+
+/* Green & Blue Theme */
+[data-theme="green-blue"] {
+  --color-primary: #10b981;
+  --color-accent: #3b82f6;
+  --color-bg: #f0fdf4;
+  --color-card: #dcfce7;
+  --color-card-hover: #bbf7d0;
+}
+
+/* Red & Orange Theme */
+[data-theme="red-orange"] {
+  --color-primary: #ef4444;
+  --color-accent: #f97316;
+  --color-bg: #fef2f2;
+  --color-card: #fee2e2;
+  --color-card-hover: #fecaca;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -19,11 +54,12 @@ html, body, #root {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: #fff;
+  background: var(--color-bg);
   color: #000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
+  transition: background 0.3s ease;
 }
 
 #root {
@@ -33,30 +69,30 @@ body {
 }
 
 ::selection {
-  background: #000;
+  background: var(--color-primary);
   color: #fff;
 }
 
 .glass {
-  background: #f5f5f5;
+  background: var(--color-card);
   border: none;
   border-radius: 0;
 }
 
 .glass-card {
-  background: #f5f5f5;
+  background: var(--color-card);
   border: none;
   border-radius: 0;
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .glass-card:hover {
-  background: #eee;
+  background: var(--color-card-hover);
   transform: translateY(-2px);
 }
 
 .glass-button {
-  background: #f5f5f5;
+  background: var(--color-card);
   border: none;
   border-radius: 0;
   transition: all 0.1s ease;
@@ -73,32 +109,50 @@ body {
 }
 
 .glass-button:hover {
-  background: #eee;
+  background: var(--color-card-hover);
   transform: translateY(-1px);
 }
 
 .glass-button-active {
-  background: #000;
+  background: var(--color-primary);
   color: #fff;
   border: none;
 }
 
 .glass-button-active:hover {
-  background: #222;
+  background: var(--color-primary);
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
 .glass-input {
-  background: #f5f5f5;
+  background: var(--color-card);
   border: none;
   border-radius: 0;
   transition: all 0.1s ease;
 }
 
 .glass-input:focus {
-  background: #eee;
+  background: var(--color-card-hover);
   outline: none;
   box-shadow: none;
+}
+
+/* Accent color for highlights */
+.text-accent {
+  color: var(--color-accent);
+}
+
+.bg-accent {
+  background: var(--color-accent);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.bg-primary {
+  background: var(--color-primary);
 }
 
 /* Smooth scrolling */

@@ -1,18 +1,29 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
-import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut, Settings, X, Check } from 'lucide-react';
 
 export default function Home() {
   const { savedGames, gameOfTheWeek, upvotes, loading } = useGames();
   const { user, isLoggedIn, openLoginModal, logout } = useAuth();
+  const { theme, setTheme, themes } = useTheme();
+  const [showSettings, setShowSettings] = useState(false);
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
       <div className="w-full max-w-lg">
         {/* Header */}
         <header className="py-8 mb-12">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-between items-center mb-4">
+            <button
+              onClick={() => setShowSettings(true)}
+              className="glass-button p-2 text-black/40 hover:text-black transition-colors"
+              title="Settings"
+            >
+              <Settings size={20} />
+            </button>
             {isLoggedIn ? (
               <button
                 onClick={logout}
@@ -168,6 +179,58 @@ export default function Home() {
           A repository of games worth remembering
         </footer>
       </div>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
+          <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setShowSettings(false)}
+          />
+          <div className="glass-card p-8 w-full max-w-sm relative">
+            <button
+              onClick={() => setShowSettings(false)}
+              className="absolute top-4 right-4 text-black/40 hover:text-black"
+            >
+              <X size={24} />
+            </button>
+
+            <h3 className="text-xl font-semibold text-black mb-6">Settings</h3>
+
+            <div>
+              <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-4">
+                Color Theme
+              </label>
+              <div className="space-y-3">
+                {themes.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTheme(t.id)}
+                    className={`w-full glass-button p-4 flex items-center justify-between transition-all ${
+                      theme === t.id ? 'glass-button-active' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1">
+                        <div
+                          className="w-5 h-5 rounded-full"
+                          style={{ backgroundColor: t.colors[0] }}
+                        />
+                        <div
+                          className="w-5 h-5 rounded-full"
+                          style={{ backgroundColor: t.colors[1] }}
+                        />
+                      </div>
+                      <span>{t.name}</span>
+                    </div>
+                    {theme === t.id && <Check size={18} />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
