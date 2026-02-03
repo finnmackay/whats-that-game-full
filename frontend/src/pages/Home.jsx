@@ -1,23 +1,15 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut, Settings, X, Check, Shuffle, Sparkles } from 'lucide-react';
+import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut, Settings, X, Check, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const { games, savedGames, gameOfTheWeek, upvotes, loading, suggestedGame, lastUpvotedGame } = useGames();
   const { user, isLoggedIn, openLoginModal, logout } = useAuth();
   const { theme, setTheme, themes } = useTheme();
   const [showSettings, setShowSettings] = useState(false);
-  const navigate = useNavigate();
-
-  const goToRandomGame = () => {
-    if (games.length > 0) {
-      const randomIndex = Math.floor(Math.random() * games.length);
-      navigate(`/game/${games[randomIndex].id}`);
-    }
-  };
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
@@ -117,17 +109,6 @@ export default function Home() {
                 </div>
               </Link>
             </section>
-          )}
-
-          {/* Random Game Button */}
-          {games.length > 0 && (
-            <button
-              onClick={goToRandomGame}
-              className="w-full glass-card p-5 cursor-pointer flex items-center justify-center gap-3 hover:bg-[var(--color-card-hover)] transition-colors"
-            >
-              <Shuffle size={20} className="text-black/60" />
-              <span className="text-black font-medium">I'm Feeling Lucky</span>
-            </button>
           )}
 
           {/* Saved Games */}
