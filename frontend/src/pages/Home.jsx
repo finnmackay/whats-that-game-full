@@ -1,21 +1,44 @@
 import { Link } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
-import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut } from 'lucide-react';
 
 export default function Home() {
   const { savedGames, gameOfTheWeek, upvotes, loading } = useGames();
+  const { user, isLoggedIn, openLoginModal, logout } = useAuth();
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
       <div className="w-full max-w-lg">
         {/* Header */}
-        <header className="text-center py-8 mb-12">
-          <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-black mb-4 font-title">
-            What's That Game
-          </h1>
-          <p className="text-black/50 text-xl">
-            Discover games worth playing
-          </p>
+        <header className="py-8 mb-12">
+          <div className="flex justify-end mb-4">
+            {isLoggedIn ? (
+              <button
+                onClick={logout}
+                className="glass-button px-4 py-2 text-sm flex items-center gap-2"
+              >
+                <LogOut size={16} />
+                <span>{user?.username}</span>
+              </button>
+            ) : (
+              <button
+                onClick={openLoginModal}
+                className="glass-button px-4 py-2 text-sm flex items-center gap-2"
+              >
+                <LogIn size={16} />
+                <span>Sign In</span>
+              </button>
+            )}
+          </div>
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-black mb-4 font-title">
+              What's That Game
+            </h1>
+            <p className="text-black/50 text-xl">
+              Discover games worth playing
+            </p>
+          </div>
         </header>
 
         <div className="space-y-10">

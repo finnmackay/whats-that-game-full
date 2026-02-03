@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import GameCard from '../components/GameCard';
@@ -5,6 +6,13 @@ import { ArrowLeft, Star, Globe } from 'lucide-react';
 
 export default function SavedGames() {
   const { savedGames } = useGames();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredGames = savedGames.filter(game => {
+    const matchesSearch = game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      game.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  });
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-10 md:py-16">
@@ -29,11 +37,30 @@ export default function SavedGames() {
         </header>
 
         {savedGames.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {savedGames.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
-          </div>
+          <>
+            {/* Search */}
+            <div className="mb-8">
+              <input
+                type="text"
+                placeholder="Search saved games..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="glass-input w-full px-6 py-5 text-lg text-black placeholder-black/30"
+              />
+            </div>
+
+            {filteredGames.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                {filteredGames.map((game) => (
+                  <GameCard key={game.id} game={game} />
+                ))}
+              </div>
+            ) : (
+              <div className="glass-card p-16 text-center text-black/40 text-lg">
+                No games match your search
+              </div>
+            )}
+          </>
         ) : (
           <div className="glass-card p-16 text-center">
             <Star size={64} strokeWidth={1.5} className="mx-auto text-black/30 mb-8" />

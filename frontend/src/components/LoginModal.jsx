@@ -16,6 +16,7 @@ export default function LoginModal() {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
+  const [country, setCountry] = useState('');
 
   if (!showLoginModal) return null;
 
@@ -26,7 +27,7 @@ export default function LoginModal() {
 
     let result;
     if (isSignUp) {
-      result = await signup(firstname, lastname, email, username, password);
+      result = await signup(firstname, lastname, email, username, password, country);
     } else {
       result = await login(username, password);
     }
@@ -45,6 +46,7 @@ export default function LoginModal() {
     setFirstname('');
     setLastname('');
     setEmail('');
+    setCountry('');
   };
 
   return (
@@ -126,6 +128,19 @@ export default function LoginModal() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
+                  className="glass-input w-full px-4 py-3 text-base text-black placeholder-black/30"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium uppercase tracking-wider text-black/40 mb-2">
+                  Country
+                </label>
+                <input
+                  type="text"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  placeholder="Your country"
                   className="glass-input w-full px-4 py-3 text-base text-black placeholder-black/30"
                 />
               </div>
