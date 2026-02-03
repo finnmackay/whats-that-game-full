@@ -84,13 +84,13 @@ export default function WorldVault() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex mb-6">
           <button
             onClick={() => setActiveTab('new')}
-            className={`flex-1 glass-button px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === 'new'
-                ? 'glass-button-active'
-                : 'text-black/60 hover:text-black'
+                ? 'bg-[var(--color-primary)] text-white'
+                : 'bg-[var(--color-card)] text-black/60 hover:text-black hover:bg-[var(--color-card-hover)]'
             }`}
           >
             <Sparkles size={16} />
@@ -98,10 +98,10 @@ export default function WorldVault() {
           </button>
           <button
             onClick={() => setActiveTab('trending')}
-            className={`flex-1 glass-button px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === 'trending'
-                ? 'glass-button-active'
-                : 'text-black/60 hover:text-black'
+                ? 'bg-[var(--color-primary)] text-white'
+                : 'bg-[var(--color-card)] text-black/60 hover:text-black hover:bg-[var(--color-card-hover)]'
             }`}
           >
             <TrendingUp size={16} />
