@@ -65,7 +65,7 @@ export default function WorldVault() {
         </header>
 
         {/* Search Bar + Roll the Dice */}
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-6">
           <input
             type="text"
             placeholder="Search games..."
