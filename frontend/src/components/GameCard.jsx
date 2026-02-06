@@ -16,32 +16,28 @@ export default function GameCard({ game }) {
 
   return (
     <Link to={`/game/${game.id}`}>
-      <div className="bg-[var(--color-card)] rounded-xl p-4 cursor-pointer hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all shadow-sm hover:shadow-md aspect-[2.5/3.5] flex flex-col">
-        {/* Top corner - game type */}
-        <div className="text-xs text-black/40 capitalize mb-2">{game.gameType}</div>
-
-        {/* Emoji - centered hero */}
+      <div className="bg-[var(--color-card)] rounded-2xl p-5 cursor-pointer hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all shadow-sm hover:shadow-lg aspect-[2.5/3.5] flex flex-col border border-black/5">
+        {/* Emoji - large centered */}
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-6xl">{game.emoji}</div>
+          <span className="text-7xl drop-shadow-sm">{game.emoji}</span>
         </div>
 
         {/* Card info */}
-        <div className="text-center mt-2">
-          <h2 className="text-base font-semibold text-black truncate">{game.name}</h2>
-          <p className="text-black/50 text-xs mt-1 line-clamp-2">{game.description}</p>
+        <div className="text-center space-y-1">
+          <h2 className="text-sm font-bold text-black leading-tight">{game.name}</h2>
+          <p className="text-[11px] text-black/40">
+            {game.playerCount.min}-{game.playerCount.max} players · {game.duration}
+          </p>
         </div>
 
-        {/* Bottom row - meta + upvote */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-black/5">
-          <div className="text-xs text-black/40">
-            {game.playerCount.min}-{game.playerCount.max}p · {game.duration}
-          </div>
+        {/* Upvote pill */}
+        <div className="flex justify-center mt-3">
           <button
             onClick={handleUpvote}
-            className={`px-2 py-1 rounded-md transition-all text-xs flex items-center gap-1 ${
+            className={`px-3 py-1.5 rounded-full transition-all text-xs font-medium flex items-center gap-1.5 ${
               hasUpvoted
                 ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-black/5 text-black/50 hover:text-black'
+                : 'bg-black/5 text-black/50 hover:bg-black/10 hover:text-black'
             }`}
           >
             <ArrowUp size={12} />
