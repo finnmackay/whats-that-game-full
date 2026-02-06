@@ -17,21 +17,19 @@ export default function GameCard({ game }) {
   return (
     <Link to={`/game/${game.id}`}>
       <div className="bg-[var(--color-card)] rounded-2xl p-5 cursor-pointer hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all shadow-sm hover:shadow-lg aspect-[2.5/3.5] flex flex-col border border-black/5">
-        {/* Emoji - large centered */}
+        {/* Name at top */}
+        <h2 className="text-sm font-bold text-black text-center leading-tight">{game.name}</h2>
+
+        {/* Emoji - centered */}
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-7xl drop-shadow-sm">{game.emoji}</span>
+          <span className="text-6xl drop-shadow-sm">{game.emoji}</span>
         </div>
 
-        {/* Card info */}
-        <div className="text-center space-y-1">
-          <h2 className="text-sm font-bold text-black leading-tight">{game.name}</h2>
-          <p className="text-[11px] text-black/40">
-            {game.playerCount.min}-{game.playerCount.max} players · {game.duration}
-          </p>
-        </div>
+        {/* Blurb under emoji */}
+        <p className="text-[11px] text-black/50 text-center line-clamp-2 mb-3">{game.description}</p>
 
         {/* Upvote pill */}
-        <div className="flex justify-center mt-3">
+        <div className="flex justify-center">
           <button
             onClick={handleUpvote}
             className={`px-3 py-1.5 rounded-full transition-all text-xs font-medium flex items-center gap-1.5 ${
