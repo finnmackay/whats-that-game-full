@@ -44,7 +44,7 @@ export default function WorldVault() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-12 md:py-16 lg:px-20">
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-4xl">
         {/* Header */}
         <header className="mb-8">
           <Link to="/" className="glass-button px-4 py-2 text-black/60 hover:text-black transition-colors mb-6 text-sm inline-flex">
@@ -116,15 +116,15 @@ export default function WorldVault() {
           </div>
         )}
 
-        {/* Game List */}
+        {/* Game Grid */}
         {filteredGames.length > 0 ? (
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {filteredGames.map((game) => (
               <GameCard key={game.id} game={game} />
             ))}
           </div>
         ) : (
-          <div className="glass-card p-12 text-center text-black/40 text-base">
+          <div className="glass-card p-12 text-center text-black/40 text-base rounded-xl">
             No games found
           </div>
         )}
