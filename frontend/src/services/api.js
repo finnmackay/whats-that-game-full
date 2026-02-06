@@ -1,4 +1,4 @@
-const API_URL = 'https://whats-that-game-production.up.railway.app';
+const API_URL = 'https://whats-that-game-backend-production.up.railway.app';
 
 // Get stored token
 const getToken = () => localStorage.getItem('token');
