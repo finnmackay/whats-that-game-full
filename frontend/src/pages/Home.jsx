@@ -7,7 +7,7 @@ import { Lock, Globe, ChevronRight, Plus, LogIn, LogOut, Settings, X, Check, Spa
 import GameCard from '../components/GameCard';
 
 export default function Home() {
-  const { games, savedGames, gameOfTheWeek, loading, suggestedGame, lastUpvotedGame } = useGames();
+  const { games, gameOfTheWeek, loading, suggestedGame, lastUpvotedGame } = useGames();
   const { user, isLoggedIn, openLoginModal, logout } = useAuth();
   const { theme, setTheme, themes } = useTheme();
   const [showSettings, setShowSettings] = useState(false);
@@ -146,49 +146,11 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Saved Games */}
-          <section>
-            <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5 px-1">
-              Saved Games
-            </h2>
-            {savedGames.length > 0 ? (
-              <div className="space-y-4">
-                {savedGames.slice(0, 3).map(game => (
-                  <Link key={game.id} to={`/game/${game.id}`}>
-                    <div className="glass-card p-5 flex items-center gap-5 cursor-pointer rounded-xl">
-                      <span className="text-3xl">{game.emoji}</span>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-black">
-                          {game.name}
-                        </h3>
-                        <p className="text-black/40 text-sm mt-0.5">
-                          {game.playerCount.min}-{game.playerCount.max} players · {game.duration}
-                        </p>
-                      </div>
-                      <ChevronRight size={20} className="text-black/30" />
-                    </div>
-                  </Link>
-                ))}
-                {savedGames.length > 3 && (
-                  <Link to="/saved">
-                    <div className="text-center text-black/40 text-sm py-3 hover:text-black transition-colors">
-                      View all {savedGames.length} saved games →
-                    </div>
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <div className="glass-card p-8 text-center text-black/40 rounded-xl">
-                No saved games yet
-              </div>
-            )}
-          </section>
-
           {/* Add Game Button */}
-          <Link to="/add" className="block mt-12">
-            <div className="glass-card p-6 cursor-pointer flex items-center justify-center gap-3">
-              <Plus size={22} strokeWidth={2} />
-              <span className="text-black font-semibold text-lg">Add a Game</span>
+          <Link to="/add" className="block mt-6">
+            <div className="bg-[var(--color-primary)] text-white p-8 cursor-pointer flex items-center justify-center gap-4 rounded-2xl hover:opacity-90 transition-all shadow-lg">
+              <Plus size={28} strokeWidth={2.5} />
+              <span className="font-bold text-xl">Add a Game</span>
             </div>
           </Link>
         </div>
