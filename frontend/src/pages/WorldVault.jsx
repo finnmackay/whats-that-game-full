@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Globe, Dices, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Globe, Dices } from 'lucide-react';
 import GameCard from '../components/GameCard';
 import { useGames } from '../context/GameContext';
 
@@ -8,31 +8,18 @@ export default function WorldVault() {
   const { games } = useGames();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('new');
 
-  // New games (most recently added)
-  const newGames = useMemo(() => {
-    return [...games]
-      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-  }, [games]);
-
-  // Trending games (most upvoted)
-  const trendingGames = useMemo(() => {
-    return [...games]
-      .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
-  }, [games]);
-
-  // Filtered games based on search
+  // Filtered games based on search, sorted by upvotes
   const filteredGames = useMemo(() => {
-    const baseGames = activeTab === 'new' ? newGames : trendingGames;
+    const sorted = [...games].sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
 
-    if (!searchQuery) return baseGames;
+    if (!searchQuery) return sorted;
 
-    return baseGames.filter(game =>
+    return sorted.filter(game =>
       game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       game.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [activeTab, newGames, trendingGames, searchQuery]);
+  }, [games, searchQuery]);
 
   // Random game
   const goToRandomGame = () => {
@@ -80,32 +67,6 @@ export default function WorldVault() {
           >
             <Dices size={20} className="text-black/60" />
             <span className="text-black font-medium hidden sm:inline text-sm">Random</span>
-          </button>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex mb-6">
-          <button
-            onClick={() => setActiveTab('new')}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'new'
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-[var(--color-card)] text-black/60 hover:text-black hover:bg-[var(--color-card-hover)]'
-            }`}
-          >
-            <Sparkles size={16} />
-            <span>New</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('trending')}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'trending'
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-[var(--color-card)] text-black/60 hover:text-black hover:bg-[var(--color-card-hover)]'
-            }`}
-          >
-            <TrendingUp size={16} />
-            <span>Trending</span>
           </button>
         </div>
 

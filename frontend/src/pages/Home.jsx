@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Lock, Globe, ChevronRight, ArrowUp, Plus, Star, LogIn, LogOut, Settings, X, Check, Sparkles } from 'lucide-react';
+import { Lock, Globe, ChevronRight, Plus, LogIn, LogOut, Settings, X, Check, Sparkles } from 'lucide-react';
+import GameCard from '../components/GameCard';
 
 export default function Home() {
-  const { games, savedGames, gameOfTheWeek, upvotes, loading, suggestedGame, lastUpvotedGame } = useGames();
+  const { games, savedGames, gameOfTheWeek, loading, suggestedGame, lastUpvotedGame } = useGames();
   const { user, isLoggedIn, openLoginModal, logout } = useAuth();
   const { theme, setTheme, themes } = useTheme();
   const [showSettings, setShowSettings] = useState(false);
@@ -59,29 +60,17 @@ export default function Home() {
               Game of the Week
             </h2>
             {loading ? (
-              <div className="glass-card p-10 text-center text-black/40">
+              <div className="glass-card p-10 text-center text-black/40 rounded-xl">
                 Loading...
               </div>
             ) : gameOfTheWeek ? (
-              <Link to={`/game/${gameOfTheWeek.id}`}>
-                <div className="glass-card p-10 cursor-pointer">
-                  <div className="text-7xl text-center py-8">
-                    {gameOfTheWeek.emoji}
-                  </div>
-                  <h3 className="text-3xl font-semibold text-center text-black mt-4">
-                    {gameOfTheWeek.name}
-                  </h3>
-                  <p className="text-black/50 text-center text-lg mt-3">
-                    {gameOfTheWeek.description}
-                  </p>
-                  <div className="flex items-center justify-center gap-2 mt-8 text-black/30 text-base">
-                    <ArrowUp size={18} />
-                    <span>{upvotes[gameOfTheWeek.id]} upvotes</span>
-                  </div>
+              <div className="flex justify-center">
+                <div className="w-48">
+                  <GameCard game={gameOfTheWeek} />
                 </div>
-              </Link>
+              </div>
             ) : (
-              <div className="glass-card p-10 text-center text-black/40">
+              <div className="glass-card p-10 text-center text-black/40 rounded-xl">
                 No games yet. Be the first to add one!
               </div>
             )}
