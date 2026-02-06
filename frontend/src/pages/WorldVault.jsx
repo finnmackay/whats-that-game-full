@@ -33,18 +33,20 @@ export default function WorldVault() {
     <div className="w-full min-h-screen flex flex-col items-center px-6 py-12 md:px-12 md:py-16 lg:px-20">
       <div className="w-full max-w-4xl">
         {/* Header */}
-        <header className="mb-8">
-          <Link to="/" className="glass-button px-4 py-2 text-black/60 hover:text-black transition-colors mb-6 text-sm inline-flex">
+        <header className="mb-10">
+          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 text-black/50 hover:text-black transition-colors mb-8 text-sm bg-[var(--color-card)] rounded-full">
             <ArrowLeft size={16} />
             <span>Back</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <Globe size={36} strokeWidth={1.5} className="text-black/70" />
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-[var(--color-card)] rounded-2xl flex items-center justify-center">
+              <Globe size={28} strokeWidth={1.5} className="text-black/70" />
+            </div>
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-black">
+              <h1 className="text-3xl font-bold tracking-tight text-black">
                 World Vault
               </h1>
-              <p className="text-black/50 text-base">
+              <p className="text-black/50 text-base mt-1">
                 {games.length} games from the community
               </p>
             </div>
@@ -52,21 +54,21 @@ export default function WorldVault() {
         </header>
 
         {/* Search Bar + Roll the Dice */}
-        <div className="flex mb-8">
+        <div className="flex gap-3 mb-10">
           <input
             type="text"
             placeholder="Search games..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="glass-input flex-1 px-4 py-3 text-base text-black placeholder-black/30"
+            className="glass-input flex-1 px-5 py-4 text-base text-black placeholder-black/30 rounded-2xl"
           />
           <button
             onClick={goToRandomGame}
-            className="glass-button px-4 py-3 cursor-pointer flex items-center gap-2 hover:bg-[var(--color-card-hover)] transition-colors"
+            className="bg-[var(--color-card)] px-5 py-4 cursor-pointer flex items-center gap-2 hover:bg-[var(--color-card-hover)] transition-colors rounded-2xl"
             title="Roll the Dice"
           >
-            <Dices size={20} className="text-black/60" />
-            <span className="text-black font-medium hidden sm:inline text-sm">Random</span>
+            <Dices size={22} className="text-black/60" />
+            <span className="text-black font-medium hidden sm:inline">Random</span>
           </button>
         </div>
 
@@ -79,7 +81,7 @@ export default function WorldVault() {
 
         {/* Game Grid */}
         {filteredGames.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
             {filteredGames.map((game) => (
               <GameCard key={game.id} game={game} />
             ))}

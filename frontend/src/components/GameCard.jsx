@@ -16,29 +16,29 @@ export default function GameCard({ game }) {
 
   return (
     <Link to={`/game/${game.id}`}>
-      <div className="bg-[var(--color-card)] rounded-2xl p-6 cursor-pointer hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all shadow-sm hover:shadow-lg aspect-[2.5/3.5] flex flex-col border border-black/5">
+      <div className="bg-[var(--color-card)] rounded-3xl px-5 py-8 cursor-pointer hover:bg-[var(--color-card-hover)] hover:-translate-y-2 hover:shadow-xl transition-all shadow-md aspect-[2.5/3.5] flex flex-col border border-black/5">
         {/* Name at top */}
-        <h2 className="text-sm font-bold text-black text-center leading-tight pt-1">{game.name}</h2>
+        <h2 className="text-base font-bold text-black text-center leading-snug mb-4">{game.name}</h2>
 
         {/* Emoji - centered */}
-        <div className="flex-1 flex items-center justify-center py-4">
-          <span className="text-6xl drop-shadow-sm">{game.emoji}</span>
+        <div className="flex-1 flex items-center justify-center">
+          <span className="text-7xl">{game.emoji}</span>
         </div>
 
         {/* Blurb under emoji */}
-        <p className="text-[11px] text-black/50 text-center line-clamp-2 px-1">{game.description}</p>
+        <p className="text-xs text-black/50 text-center line-clamp-2 mt-4 mb-5 leading-relaxed">{game.description}</p>
 
         {/* Upvote pill */}
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-center">
           <button
             onClick={handleUpvote}
-            className={`px-4 py-2 rounded-full transition-all text-xs font-medium flex items-center gap-1.5 ${
+            className={`px-5 py-2.5 rounded-full transition-all text-sm font-semibold flex items-center gap-2 ${
               hasUpvoted
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-black/5 text-black/50 hover:bg-black/10 hover:text-black'
+                ? 'bg-[var(--color-primary)] text-white shadow-md'
+                : 'bg-black/5 text-black/60 hover:bg-black/10 hover:text-black'
             }`}
           >
-            <ArrowUp size={12} />
+            <ArrowUp size={14} />
             <span>{voteCount}</span>
           </button>
         </div>
