@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useGames } from '../context/GameContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Lock, Globe, ChevronRight, Plus, LogIn, LogOut, Settings, X, Check, Sparkles } from 'lucide-react';
+import { Lock, Globe, ChevronRight, Plus, LogIn, LogOut, Settings, X, Check, Sparkles, Search } from 'lucide-react';
 import GameCard from '../components/GameCard';
 
 export default function Home() {
@@ -100,49 +100,17 @@ export default function Home() {
             </section>
           )}
 
-          {/* Saved Games */}
-          <section>
-            <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5 px-1">
-              Saved Games
-            </h2>
-            {savedGames.length > 0 ? (
-              <div className="space-y-6">
-                {savedGames.slice(0, 3).map(game => (
-                  <Link key={game.id} to={`/game/${game.id}`}>
-                    <div className="glass-card p-6 flex items-center gap-6 cursor-pointer">
-                      <span className="text-4xl">{game.emoji}</span>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-black text-lg">
-                          {game.name}
-                        </h3>
-                        <p className="text-black/40 text-base mt-1">
-                          {game.playerCount.min}-{game.playerCount.max} players · {game.duration}
-                        </p>
-                      </div>
-                      <ChevronRight size={24} className="text-black/30" />
-                    </div>
-                  </Link>
-                ))}
-                {savedGames.length > 3 && (
-                  <Link to="/saved">
-                    <div className="text-center text-black/40 text-base py-4 hover:text-black transition-colors">
-                      View all {savedGames.length} saved games →
-                    </div>
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <div className="glass-card p-10 text-center text-black/40 text-lg">
-                No saved games yet
-              </div>
-            )}
-          </section>
-
           {/* Vaults */}
           <section>
-            <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5 px-1">
-              Vaults
-            </h2>
+            <div className="flex items-center justify-between mb-5 px-1">
+              <h2 className="text-sm font-medium uppercase tracking-wider text-black/40">
+                Vaults
+              </h2>
+              <Link to="/world-vault" className="glass-button px-3 py-1.5 text-xs flex items-center gap-1.5 text-black/50 hover:text-black">
+                <Search size={12} />
+                <span>Search</span>
+              </Link>
+            </div>
             <div className="space-y-6">
               <Link to="/my-vault">
                 <div className="glass-card p-8 cursor-pointer">
@@ -176,6 +144,44 @@ export default function Home() {
                 </div>
               </Link>
             </div>
+          </section>
+
+          {/* Saved Games */}
+          <section>
+            <h2 className="text-sm font-medium uppercase tracking-wider text-black/40 mb-5 px-1">
+              Saved Games
+            </h2>
+            {savedGames.length > 0 ? (
+              <div className="space-y-4">
+                {savedGames.slice(0, 3).map(game => (
+                  <Link key={game.id} to={`/game/${game.id}`}>
+                    <div className="glass-card p-5 flex items-center gap-5 cursor-pointer rounded-xl">
+                      <span className="text-3xl">{game.emoji}</span>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-black">
+                          {game.name}
+                        </h3>
+                        <p className="text-black/40 text-sm mt-0.5">
+                          {game.playerCount.min}-{game.playerCount.max} players · {game.duration}
+                        </p>
+                      </div>
+                      <ChevronRight size={20} className="text-black/30" />
+                    </div>
+                  </Link>
+                ))}
+                {savedGames.length > 3 && (
+                  <Link to="/saved">
+                    <div className="text-center text-black/40 text-sm py-3 hover:text-black transition-colors">
+                      View all {savedGames.length} saved games →
+                    </div>
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div className="glass-card p-8 text-center text-black/40 rounded-xl">
+                No saved games yet
+              </div>
+            )}
           </section>
 
           {/* Add Game Button */}
