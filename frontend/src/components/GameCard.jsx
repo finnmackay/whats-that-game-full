@@ -16,43 +16,38 @@ export default function GameCard({ game }) {
 
   return (
     <Link to={`/game/${game.id}`}>
-      <div className="glass-card p-5 cursor-pointer hover:bg-[var(--color-card-hover)] transition-colors">
-        {/* Header row */}
-        <div className="flex items-start gap-4 mb-3">
-          <div className="text-4xl">{game.emoji}</div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-semibold text-black">{game.name}</h2>
-            <p className="text-black/50 text-sm mt-1 line-clamp-2">{game.description}</p>
+      <div className="bg-[var(--color-card)] rounded-xl p-4 cursor-pointer hover:bg-[var(--color-card-hover)] hover:-translate-y-1 transition-all shadow-sm hover:shadow-md aspect-[2.5/3.5] flex flex-col">
+        {/* Top corner - game type */}
+        <div className="text-xs text-black/40 capitalize mb-2">{game.gameType}</div>
+
+        {/* Emoji - centered hero */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-6xl">{game.emoji}</div>
+        </div>
+
+        {/* Card info */}
+        <div className="text-center mt-2">
+          <h2 className="text-base font-semibold text-black truncate">{game.name}</h2>
+          <p className="text-black/50 text-xs mt-1 line-clamp-2">{game.description}</p>
+        </div>
+
+        {/* Bottom row - meta + upvote */}
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-black/5">
+          <div className="text-xs text-black/40">
+            {game.playerCount.min}-{game.playerCount.max}p · {game.duration}
           </div>
           <button
             onClick={handleUpvote}
-            className={`px-3 py-1.5 transition-all text-sm flex items-center gap-1 shrink-0 ${
+            className={`px-2 py-1 rounded-md transition-all text-xs flex items-center gap-1 ${
               hasUpvoted
                 ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-[var(--color-card-hover)] text-black/50 hover:text-black'
+                : 'bg-black/5 text-black/50 hover:text-black'
             }`}
           >
-            <ArrowUp size={14} />
+            <ArrowUp size={12} />
             <span>{voteCount}</span>
           </button>
         </div>
-
-        {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-2 text-xs mb-3">
-          <span className="bg-[var(--color-card-hover)] px-2 py-1 text-black/60">{game.playerCount.min}-{game.playerCount.max} players</span>
-          <span className="bg-[var(--color-card-hover)] px-2 py-1 text-black/60">{game.duration}</span>
-          <span className="bg-[var(--color-card-hover)] px-2 py-1 text-black/60">{game.ageRating}</span>
-          <span className="bg-[var(--color-card-hover)] px-2 py-1 text-black/60 capitalize">{game.gameType}</span>
-        </div>
-
-        {/* Themes */}
-        {game.themes && game.themes.length > 0 && (
-          <div className="flex flex-wrap gap-2 text-xs text-black/40">
-            {game.themes.slice(0, 4).map((theme, i) => (
-              <span key={i}>#{theme}</span>
-            ))}
-          </div>
-        )}
       </div>
     </Link>
   );
