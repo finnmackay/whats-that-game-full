@@ -53,7 +53,7 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="space-y-5">
+        <div className="space-y-8">
           {/* Game of the Week */}
           <section>
             <h2 className="text-xs font-semibold uppercase tracking-wider text-black/40 mb-3">
@@ -100,30 +100,34 @@ export default function Home() {
             </section>
           )}
 
-          {/* Vaults - side by side */}
+          {/* Vaults */}
           <section>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-black/40">
-                Vaults
-              </h2>
-              <Link to="/world-vault" className="text-xs flex items-center gap-1 text-black/40 hover:text-black">
-                <Search size={10} />
-                <span>Search</span>
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-black/40 mb-4">
+              Vaults
+            </h2>
+            <div className="space-y-3">
               <Link to="/my-vault">
-                <div className="bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] p-4 cursor-pointer rounded-2xl transition-all text-center">
-                  <Lock size={24} strokeWidth={1.5} className="text-black/50 mx-auto mb-2" />
-                  <h3 className="font-semibold text-black text-sm">My Vault</h3>
-                  <p className="text-black/40 text-xs mt-1">Your collection</p>
+                <div className="bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] p-4 cursor-pointer rounded-2xl transition-all flex items-center gap-4">
+                  <div className="w-12 h-12 bg-black/5 rounded-xl flex items-center justify-center">
+                    <Lock size={22} strokeWidth={1.5} className="text-black/60" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-black text-sm">My Vault</h3>
+                    <p className="text-black/40 text-xs mt-0.5">Your personal collection</p>
+                  </div>
+                  <ChevronRight size={18} className="text-black/30" />
                 </div>
               </Link>
               <Link to="/world-vault">
-                <div className="bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] p-4 cursor-pointer rounded-2xl transition-all text-center">
-                  <Globe size={24} strokeWidth={1.5} className="text-black/50 mx-auto mb-2" />
-                  <h3 className="font-semibold text-black text-sm">World Vault</h3>
-                  <p className="text-black/40 text-xs mt-1">Community games</p>
+                <div className="bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] p-4 cursor-pointer rounded-2xl transition-all flex items-center gap-4">
+                  <div className="w-12 h-12 bg-black/5 rounded-xl flex items-center justify-center">
+                    <Globe size={22} strokeWidth={1.5} className="text-black/60" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-black text-sm">World Vault</h3>
+                    <p className="text-black/40 text-xs mt-0.5">Community games</p>
+                  </div>
+                  <ChevronRight size={18} className="text-black/30" />
                 </div>
               </Link>
             </div>
