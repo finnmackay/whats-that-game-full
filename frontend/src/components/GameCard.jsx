@@ -25,9 +25,9 @@ export default function GameCard({ game }) {
     <Link to={`/game/${game.id}`}>
       <div className="bg-[var(--color-card)] rounded-2xl p-3 cursor-pointer hover:-translate-y-2 hover:shadow-xl transition-all shadow-md aspect-[2.5/3.5] flex flex-col">
         {/* Inner card with border */}
-        <div className="flex-1 flex flex-col border-2 border-black/10 rounded-xl p-4">
+        <div className="flex-1 flex flex-col border-2 border-black/10 rounded-xl px-4 pb-4">
           {/* Name at top */}
-          <h2 className="text-lg font-bold text-black text-center leading-tight">{game.name}</h2>
+          <h2 className="text-lg font-bold text-black text-center leading-tight pt-5">{game.name}</h2>
 
           {/* Emoji - centered */}
           <div className="flex-1 flex items-center justify-center">
