@@ -105,7 +105,7 @@ export default function Home() {
             <h2 className="text-xs font-semibold uppercase tracking-wider text-black/40 mb-4">
               Vaults
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <Link to="/my-vault">
                 <div className="bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] p-4 cursor-pointer rounded-2xl transition-all flex items-center gap-4">
                   <div className="w-12 h-12 bg-black/5 rounded-xl flex items-center justify-center">
