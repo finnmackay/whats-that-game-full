@@ -24,8 +24,8 @@ export default function GameCard({ game }) {
   return (
     <Link to={`/game/${game.id}`}>
       <div className="bg-[var(--color-card)] rounded-2xl p-4 cursor-pointer hover:-translate-y-2 hover:shadow-xl transition-all shadow-md aspect-[2.5/3.5] flex flex-col border-2 border-black/10">
-        {/* Name at top - 20px from top */}
-        <h2 className="text-lg font-bold text-black text-center leading-tight mt-3">{game.name}</h2>
+        {/* Name at top */}
+        <h2 className="text-xl font-bold text-black text-center leading-tight mt-3">{game.name}</h2>
 
         {/* Emoji - centered */}
         <div className="flex-1 flex items-center justify-center">
@@ -33,7 +33,7 @@ export default function GameCard({ game }) {
         </div>
 
         {/* Blurb under emoji */}
-        <p className="text-xs text-black/50 text-center line-clamp-2 leading-relaxed mb-4">{game.description}</p>
+        <p className="text-sm text-black/50 text-center line-clamp-3 leading-relaxed mb-4">{game.description}</p>
 
         {/* Bottom row - upvotes left, save right */}
         <div className="flex items-center justify-between">

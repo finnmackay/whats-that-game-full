@@ -65,7 +65,7 @@ export default function Home() {
               </div>
             ) : gameOfTheWeek ? (
               <div className="flex justify-center">
-                <div className="w-40">
+                <div className="w-52">
                   <GameCard game={gameOfTheWeek} />
                 </div>
               </div>
