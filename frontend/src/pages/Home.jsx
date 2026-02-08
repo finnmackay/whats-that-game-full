@@ -105,7 +105,7 @@ export default function Home() {
             <h2 className="text-xs font-semibold uppercase tracking-wider text-black/40 mb-4">
               Vaults
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Link to="/my-vault">
                 <div className="bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] p-4 cursor-pointer rounded-2xl transition-all flex items-center gap-4">
                   <div className="w-12 h-12 bg-black/5 rounded-xl flex items-center justify-center">
@@ -134,7 +134,7 @@ export default function Home() {
           </section>
 
           {/* Add Game Button */}
-          <Link to="/add" className="block">
+          <Link to="/add" className="block mt-4">
             <div className="bg-[var(--color-primary)] text-white p-5 cursor-pointer flex items-center justify-center gap-3 rounded-2xl hover:opacity-90 transition-all shadow-md">
               <Plus size={22} strokeWidth={2.5} />
               <span className="font-bold text-base">Add a Game</span>
